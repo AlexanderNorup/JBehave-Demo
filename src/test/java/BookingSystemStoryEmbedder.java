@@ -39,5 +39,4 @@ public class BookingSystemStoryEmbedder extends Embedder {
     public InjectableStepsFactory stepsFactory() {
         return new InstanceStepsFactory(configuration(), new TennisBookingSteps());
     }
-
 }

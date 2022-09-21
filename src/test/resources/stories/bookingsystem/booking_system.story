@@ -28,7 +28,6 @@ And I add a PT1H booking starting at 14 in court 1
 Then there should be no exceptions
 And there should be 2 bookings in court 1
 
-
 Scenario: Adding two non-overlapping bookings in different courts
 
 Given there is 2 courts in the booking system
@@ -42,5 +41,4 @@ Scenario: You book in a court that does not exist
 Given there is 2 courts in the booking system
 When I add a PT1H booking starting at 12 in court 3
 Then there is a no such court exception
-And there should be 0 bookings in total
 

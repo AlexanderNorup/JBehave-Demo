@@ -1,9 +1,10 @@
 package Steps;
 
-import com.alexandernorup.TennisBooking.*;
+import com.alexandernorup.TennisBooking.BookingSystem;
 import com.alexandernorup.TennisBooking.Exceptions.BookingException;
 import com.alexandernorup.TennisBooking.Exceptions.NoSuchCourtException;
 import com.alexandernorup.TennisBooking.Exceptions.OverlappingBookingException;
+import com.alexandernorup.TennisBooking.TennisBooking;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.Given;
@@ -19,26 +20,27 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+
 public class TennisBookingSteps {
     private BookingSystem bookingSystem;
     private List<Throwable> runtimeExceptions = new ArrayList<>();
 
     @BeforeScenario
-    public void resetExceptions(){
+    public void resetExceptions() {
         runtimeExceptions.clear();
     }
 
     @Given("there is $num courts in the booking system")
-    public void createCourts(int num){
+    public void createCourts(int num) {
         String[] courts = new String[num];
-        for (int i = 0; i < num; i++){
-            courts[i] = "court " + (i+1);
+        for (int i = 0; i < num; i++) {
+            courts[i] = "court " + (i + 1);
         }
         bookingSystem = new BookingSystem(courts);
     }
 
     @When("all courts are fully booked")
-    public void fillAllCourts(){
+    public void fillAllCourts() {
         Arrays.stream(bookingSystem.getCourts())
                 .forEach(x -> {
                     try {
@@ -50,7 +52,7 @@ public class TennisBookingSteps {
     }
 
     @When("I add a $duration booking starting at $time in court $courtNum")
-    public void addBooking(String duration, int time, int courtNum){
+    public void addBooking(String duration, int time, int courtNum) {
         var timestamp = getStartOfToday().plus(Duration.ofHours(time));
         var parsedDuration = Duration.parse(duration);
         var court = "court " + courtNum;
@@ -68,22 +70,22 @@ public class TennisBookingSteps {
     }
 
     @Then("there is a booking exception")
-    public void assertBookingException () {
-        assertThat(this.runtimeExceptions.stream().anyMatch(x-> x instanceof BookingException), Matchers.is(false));
+    public void assertBookingException() {
+        assertThat(this.runtimeExceptions.stream().anyMatch(x -> x instanceof BookingException), Matchers.is(false));
     }
 
     @Then("there is a overlapping booking exception")
-    public void assertOverlappingBookingException () {
-        assertThat(this.runtimeExceptions.stream().anyMatch(x-> x instanceof OverlappingBookingException), Matchers.is(true));
+    public void assertOverlappingBookingException() {
+        assertThat(this.runtimeExceptions.stream().anyMatch(x -> x instanceof OverlappingBookingException), Matchers.is(true));
     }
 
     @Then("there is a no such court exception")
     public void assertNoSuchCourtException() {
-        assertThat(this.runtimeExceptions.stream().anyMatch(x-> x instanceof NoSuchCourtException), Matchers.is(true));
+        assertThat(this.runtimeExceptions.stream().anyMatch(x -> x instanceof NoSuchCourtException), Matchers.is(true));
     }
 
     @Then("there should be $num bookings in total")
-    public void assertNumBookingInCourt(int num){
+    public void assertNumBookingInCourt(int num) {
         assertThat(this.bookingSystem.getAllBookings().size(), Matchers.is(num));
     }
 
@@ -92,7 +94,7 @@ public class TennisBookingSteps {
         assertThat(this.bookingSystem.getBookingsForCourt("court " + courtNum).size(), Matchers.equalTo(num));
     }
 
-    private Instant getStartOfToday(){
+    private Instant getStartOfToday() {
         return LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC);
     }
 }

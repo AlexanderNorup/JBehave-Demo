@@ -7,12 +7,10 @@ import java.util.List;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 public class BookingSystemStoryRunner {
-
     @Test
-    public void runBookingSystemStories(){
+    public void runBookingSystemStories() {
         Embedder embedder = new BookingSystemStoryEmbedder();
-        List<String> storyPaths  = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/stories/bookingsystem/*.story", "");
+        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/stories/bookingsystem/*.story", "");
         embedder.runStoriesAsPaths(storyPaths);
     }
-
 }
