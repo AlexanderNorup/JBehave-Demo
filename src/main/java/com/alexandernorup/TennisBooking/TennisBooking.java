@@ -2,19 +2,18 @@ package com.alexandernorup.TennisBooking;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.UUID;
 
 public class TennisBooking implements Comparable<TennisBooking>{
     private Instant timestamp;
     private Duration duration;
     private String bookee;
-    private String roomId;
+    private String courtId;
 
-    public TennisBooking(Instant timestamp, Duration duration, String bookee, String roomId) {
+    public TennisBooking(Instant timestamp, Duration duration, String bookee, String courtId) {
         this.timestamp = timestamp;
         this.duration = duration;
         this.bookee = bookee;
-        this.roomId = roomId;
+        this.courtId = courtId;
     }
 
     public Instant getTimestamp() {
@@ -41,12 +40,12 @@ public class TennisBooking implements Comparable<TennisBooking>{
         this.bookee = bookee;
     }
 
-    public String getRoomId() {
-        return roomId;
+    public String getCourtId() {
+        return courtId;
     }
 
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
+    public void setCourtId(String courtId) {
+        this.courtId = courtId;
     }
 
     @Override

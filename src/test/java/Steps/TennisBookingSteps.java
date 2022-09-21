@@ -2,7 +2,7 @@ package Steps;
 
 import com.alexandernorup.TennisBooking.*;
 import com.alexandernorup.TennisBooking.Exceptions.BookingException;
-import com.alexandernorup.TennisBooking.Exceptions.NoSuchRoomException;
+import com.alexandernorup.TennisBooking.Exceptions.NoSuchCourtException;
 import com.alexandernorup.TennisBooking.Exceptions.OverlappingBookingException;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.BeforeScenario;
@@ -28,18 +28,18 @@ public class TennisBookingSteps {
         runtimeExceptions.clear();
     }
 
-    @Given("there is $num rooms in the booking system")
-    public void createRooms(int num){
-        String[] rooms = new String[num];
+    @Given("there is $num courts in the booking system")
+    public void createCourts(int num){
+        String[] courts = new String[num];
         for (int i = 0; i < num; i++){
-            rooms[i] = "room " + (i+1);
+            courts[i] = "court " + (i+1);
         }
-        bookingSystem = new BookingSystem(rooms);
+        bookingSystem = new BookingSystem(courts);
     }
 
-    @When("all rooms are fully booked")
-    public void fillAllRooms(){
-        Arrays.stream(bookingSystem.getRooms())
+    @When("all courts are fully booked")
+    public void fillAllCourts(){
+        Arrays.stream(bookingSystem.getCourts())
                 .forEach(x -> {
                     try {
                         bookingSystem.addBooking(new TennisBooking(getStartOfToday(), Duration.ofHours(24), "test", x));
@@ -49,14 +49,14 @@ public class TennisBookingSteps {
                 });
     }
 
-    @When("I add a $duration booking starting at $time in room $roomNum")
-    public void addBooking(String duration, int time, int roomNum){
+    @When("I add a $duration booking starting at $time in court $courtNum")
+    public void addBooking(String duration, int time, int courtNum){
         var timestamp = getStartOfToday().plus(Duration.ofHours(time));
         var parsedDuration = Duration.parse(duration);
-        var room = "room " + roomNum;
+        var court = "court " + courtNum;
 
         try {
-            bookingSystem.addBooking(new TennisBooking(timestamp, parsedDuration, "test", room));
+            bookingSystem.addBooking(new TennisBooking(timestamp, parsedDuration, "test", court));
         } catch (BookingException e) {
             runtimeExceptions.add(e);
         }
@@ -77,19 +77,19 @@ public class TennisBookingSteps {
         assertThat(this.runtimeExceptions.stream().anyMatch(x-> x instanceof OverlappingBookingException), Matchers.is(true));
     }
 
-    @Then("there is a no such room exception")
-    public void assertNoSuchRoomException () {
-        assertThat(this.runtimeExceptions.stream().anyMatch(x-> x instanceof NoSuchRoomException), Matchers.is(true));
+    @Then("there is a no such court exception")
+    public void assertNoSuchCourtException() {
+        assertThat(this.runtimeExceptions.stream().anyMatch(x-> x instanceof NoSuchCourtException), Matchers.is(true));
     }
 
     @Then("there should be $num bookings in total")
-    public void assertNumBookingInRoom(int num){
+    public void assertNumBookingInCourt(int num){
         assertThat(this.bookingSystem.getAllBookings().size(), Matchers.is(num));
     }
 
-    @Then("there should be $num bookings in room $roomNum")
-    public void assertNumBookingInRoom(int num, int roomNum) throws BookingException {
-        assertThat(this.bookingSystem.getBookingsForRoom("room " + roomNum).size(), Matchers.equalTo(num));
+    @Then("there should be $num bookings in court $courtNum")
+    public void assertNumBookingInCourt(int num, int courtNum) throws BookingException {
+        assertThat(this.bookingSystem.getBookingsForCourt("court " + courtNum).size(), Matchers.equalTo(num));
     }
 
     private Instant getStartOfToday(){

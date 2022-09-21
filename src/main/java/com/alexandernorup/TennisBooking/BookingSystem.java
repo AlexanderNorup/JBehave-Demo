@@ -1,7 +1,7 @@
 package com.alexandernorup.TennisBooking;
 
 import com.alexandernorup.TennisBooking.Exceptions.BookingException;
-import com.alexandernorup.TennisBooking.Exceptions.NoSuchRoomException;
+import com.alexandernorup.TennisBooking.Exceptions.NoSuchCourtException;
 import com.alexandernorup.TennisBooking.Exceptions.OverlappingBookingException;
 
 import java.time.Instant;
@@ -11,21 +11,21 @@ import java.util.List;
 
 public class BookingSystem {
     private List<TennisBooking> bookings;
-    private final String[] rooms;
+    private final String[] courts;
 
-    public BookingSystem(String... rooms) {
+    public BookingSystem(String... courts) {
         bookings = new ArrayList<>();
-        this.rooms = rooms;
+        this.courts = courts;
     }
 
-    public String[] getRooms() {
-        return rooms;
+    public String[] getCourts() {
+        return courts;
     }
 
     public void addBooking(TennisBooking newBooking) throws BookingException {
-        var bookingsInRoom = getBookingsForRoom(newBooking.getRoomId());
+        var bookingsInCourt = getBookingsForCourt(newBooking.getCourtId());
 
-        if (bookingsInRoom.isEmpty()) {
+        if (bookingsInCourt.isEmpty()) {
             bookings.add(newBooking);
             return;
         }
@@ -34,7 +34,7 @@ public class BookingSystem {
         var newBookingEndTime = newBooking.getTimestamp().plus(newBooking.getDuration());
 
         //Check if overlapping
-        for (var booking : bookingsInRoom) {
+        for (var booking : bookingsInCourt) {
             var bookingStartTime = booking.getTimestamp();
             var bookingEndTime = booking.getTimestamp().plus(booking.getDuration());
 
@@ -48,12 +48,12 @@ public class BookingSystem {
         bookings.add(newBooking);
     }
 
-    public List<TennisBooking> getBookingsForRoom(String roomId) throws BookingException {
-        if (Arrays.stream(rooms).noneMatch(x -> x.equalsIgnoreCase(roomId))) {
-            throw new NoSuchRoomException(roomId);
+    public List<TennisBooking> getBookingsForCourt(String courtId) throws BookingException {
+        if (Arrays.stream(courts).noneMatch(x -> x.equalsIgnoreCase(courtId))) {
+            throw new NoSuchCourtException(courtId);
         }
 
-        return bookings.stream().filter(x -> x.getRoomId().equalsIgnoreCase(roomId)).sorted().toList();
+        return bookings.stream().filter(x -> x.getCourtId().equalsIgnoreCase(courtId)).sorted().toList();
     }
 
     public List<TennisBooking> getAllBookings(){
